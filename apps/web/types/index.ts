@@ -31,3 +31,65 @@ export interface TrustItem {
   description: string;
   icon: string;
 }
+
+/* ============================================================
+   AUTH TYPES — mirrors backend response contracts
+   ============================================================ */
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name?: string;
+  role: "user" | "admin";
+  isEmailVerified: boolean;
+  twoFactorEnabled?: boolean;
+}
+
+export interface LoginResponse {
+  message: string;
+  accessToken: string;
+  user: AuthUser;
+}
+
+export interface RegisterResponse {
+  message: string;
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    isEmailVerified: boolean;
+  };
+}
+
+export interface RefreshResponse {
+  message: string;
+  accessToken: string;
+  user: AuthUser;
+}
+
+export interface TwoFASetupResponse {
+  message: string;
+  otpAuthUrl: string;
+  secret: string;
+}
+
+export interface TwoFAVerifyResponse {
+  message: string;
+  twoFactorEnabled: boolean;
+}
+
+export interface ApiErrorResponse {
+  message: string;
+  errors?: {
+    fieldErrors?: Record<string, string[]>;
+    formErrors?: string[];
+  };
+}
+
+export interface MessageResponse {
+  message: string;
+}
+
+export interface MeResponse {
+  user: AuthUser;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
@@ -41,7 +42,8 @@ const baseStyles =
   "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none";
 
 /**
- * Polymorphic Button — renders as `<a>` when `href` is provided,
+ * Polymorphic Button — renders as Next.js `<Link>` for internal navigation,
+ * `<a>` for external navigation when `href` is provided,
  * otherwise renders as `<button>`. Follows shadcn/ui API conventions.
  */
 const Button = forwardRef<
@@ -53,6 +55,16 @@ const Button = forwardRef<
 
   if (props.href !== undefined) {
     const { href, ...anchorProps } = rest as Omit<ButtonAsLink, "variant" | "size">;
+    if (href.startsWith("/") || href.startsWith("#")) {
+      return (
+        <Link
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={href}
+          className={classes}
+          {...anchorProps}
+        />
+      );
+    }
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}

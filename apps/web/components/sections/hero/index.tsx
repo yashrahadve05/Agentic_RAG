@@ -57,11 +57,11 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6, ease }}
           >
-            <Button size="lg" href="#get-started">
+            <Button size="lg" href="/auth/register">
               Get Started
             </Button>
-            <Button size="lg" variant="secondary" href="#book-demo">
-              Book Demo
+            <Button size="lg" variant="secondary" href="/auth/login">
+              Sign in
               <ArrowRight size={16} />
             </Button>
           </motion.div>

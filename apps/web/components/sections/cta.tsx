@@ -46,7 +46,7 @@ export function CTA() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              href="#"
+              href="/auth/register"
               className="bg-white text-slate-900 hover:bg-gray-100 active:bg-gray-200"
             >
               Get Started
@@ -54,10 +54,10 @@ export function CTA() {
             <Button
               size="lg"
               variant="secondary"
-              href="#"
+              href="/auth/login"
               className="border-slate-700 text-slate-300 hover:bg-white/5 hover:text-white"
             >
-              Book Demo
+              Sign in
               <ArrowRight size={16} />
             </Button>
           </div>

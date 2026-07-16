@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { AuthProvider } from "@/providers/auth-provider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -45,7 +46,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -66,6 +66,31 @@ The landing page is designed to convey premium quality, trust, and industrial pr
    * `EnterpriseTrust`: SOC 2 Type II, SSO/SAML, Role-Based Access, and On-Premises capabilities list.
    * `CTA`: Clean end conversion point matching the primary theme.
 
+### Authentication & Dashboard UI Architecture (`apps/web`)
+The frontend implements a production-grade authentication UI integrated with `services/auth-service`.
+
+1. **Route Groups**:
+   * `(auth)`: Clean, centered layout without navbar/footer (`app/(auth)/layout.tsx`) for public authentication flows:
+     * `/auth/login`: Email/password login with 2FA TOTP challenge modal support (`app/(auth)/auth/login/page.tsx`).
+     * `/auth/register`: Account creation with validation (`app/(auth)/auth/register/page.tsx`).
+     * `/auth/verify-email`: Token processing and email verification (`app/(auth)/auth/verify-email/page.tsx`).
+     * `/auth/check-email`: Informational status screen (`app/(auth)/auth/check-email/page.tsx`).
+     * `/auth/forgot-password` & `/auth/reset-password`: Password recovery flow (`app/(auth)/auth/forgot-password/page.tsx`).
+     * `/auth/google/callback`: OAuth callback handler supporting code exchange and session refresh (`app/(auth)/auth/google/callback/page.tsx`).
+   * `(dashboard)`: Protected enterprise intelligence workspace (`app/(dashboard)/layout.tsx`):
+     * `/dashboard`: Account security status, active session monitoring, and interactive 2FA setup/verification (`app/(dashboard)/dashboard/page.tsx`).
+
+2. **Auth Infrastructure & State Management**:
+   * **Next.js Rewrites API Proxy (`next.config.js`)**: Proxies `/api/*` to `http://localhost:5000/*`, eliminating CORS complexity between frontend and backend while maintaining HTTP-only cookie security (`sameSite: "lax"`).
+   * **In-Memory Token Storage (`lib/auth.ts`)**: Access tokens (`30m` expiry) are stored strictly in memory (not `localStorage` or `sessionStorage`) for maximum protection against XSS. Silent refresh attempts (`POST /api/auth/refresh`) restore sessions on page load using the HTTP-only refresh cookie (`7d` expiry).
+   * **Authenticated API Client (`lib/api.ts`)**: Auto-injects `Authorization: Bearer <token>` headers, automatically retries on `401 Unauthorized` by rotating access tokens, and throws typed `ApiError` instances.
+   * **Client Validation (`lib/validators.ts`)**: Exact Zod schema parity with `auth-service` validation rules.
+   * **React Query Auth Provider (`providers/auth-provider.tsx`)**: Global auth context providing `user`, `isAuthenticated`, `isLoading`, and action methods (`login`, `logout`, `refreshUser`). Consumed via `useAuth()` (`hooks/use-auth.ts`).
+
+3. **Auth & UI Primitives**:
+   * **shadcn-style Primitives (`components/ui/*`)**: `Input` (with error state styling), `Label`, compound `Card` (`CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`), `Separator`, `Spinner`, and `Alert`.
+   * **Auth Components (`components/auth/*`)**: Branded `AuthCard` wrapper with Framer Motion entry, `SocialLogin` Google OAuth button, `FormField` compound inputs, `PasswordInput` visibility toggle, and `TwoFactorInput` 6-digit OTP boxes with auto-focus and clipboard paste support.
+
 ---
 
 ## 🌐 Auth Service Architecture (`services/auth-service`)
